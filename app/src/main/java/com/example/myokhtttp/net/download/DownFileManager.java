@@ -423,20 +423,23 @@ public class DownFileManager implements IDownloadServiceCallable {
     //恢复全部下载
     private void resumeAutoCancelItem() {
         List<DownLoadItemInfo> allAutoCancelList = downLoadDao.findAllAutoCancelRecords();
+        if (null == allAutoCancelList || 0 == allAutoCancelList.size()) {
+            return;
+        }
 
         List<DownLoadItemInfo> notDownloadingList = new ArrayList<DownLoadItemInfo>();
-        for (DownLoadItemInfo loadItemInfo :allAutoCancelList){
-            if (!isDowning(loadItemInfo.getFilePath())){
+        for (DownLoadItemInfo loadItemInfo : allAutoCancelList) {
+            if (!isDowning(loadItemInfo.getFilePath())) {
                 notDownloadingList.add(loadItemInfo);
             }
         }
 
-        for (DownLoadItemInfo downLoadItemInfo:notDownloadingList){
-            if (downLoadItemInfo.getPriority()==Priority.high.getValue()){
-                resumeItem(downLoadItemInfo.getId(),Priority.high);
+        for (DownLoadItemInfo downLoadItemInfo : notDownloadingList) {
+            if (downLoadItemInfo.getPriority() == Priority.high.getValue()) {
+                resumeItem(downLoadItemInfo.getId(), Priority.high);
                 return;
-            }else if (downLoadItemInfo.getPriority()==Priority.middle.getValue()){
-                resumeItem(downLoadItemInfo.getId(),Priority.middle);
+            } else if (downLoadItemInfo.getPriority() == Priority.middle.getValue()) {
+                resumeItem(downLoadItemInfo.getId(), Priority.middle);
                 return;
             }
         }
@@ -444,13 +447,13 @@ public class DownFileManager implements IDownloadServiceCallable {
     }
 
     //恢复下载
-    private void resumeItem(int  downId, Priority priority) {
+    private void resumeItem(int downId, Priority priority) {
         DownLoadItemInfo downLoadItemInfo = downLoadDao.findRecordById(downId);
-        if (null==downLoadItemInfo){
+        if (null == downLoadItemInfo) {
             return;
         }
-        if (null==priority){
-            priority =  Priority.getInstance(downLoadItemInfo.getPriority()==null?Priority.low.getValue():Priority.middle.getValue());
+        if (null == priority) {
+            priority = Priority.getInstance(downLoadItemInfo.getPriority() == null ? Priority.low.getValue() : Priority.middle.getValue());
         }
 
         File file = new File(downLoadItemInfo.getFilePath());
@@ -458,14 +461,14 @@ public class DownFileManager implements IDownloadServiceCallable {
         downLoadItemInfo.setStopMode(DownloadStopMode.auto.getValue());
 
         downLoadDao.updateRecord(downLoadItemInfo);
-        download(downLoadItemInfo.getUrl(),file.getPath(),null,priority);
+        download(downLoadItemInfo.getUrl(), file.getPath(), null, priority);
     }
 
     @Override
     public void onDownloadPause(DownLoadItemInfo downloadItemInfo) {
 
     }
-        
+
     @Override
     public void onDownloadError(DownLoadItemInfo downloadItemInfo, int var2, String var3) {
     }

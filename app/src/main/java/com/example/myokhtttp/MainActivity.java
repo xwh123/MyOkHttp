@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.myokhtttp.net.download.DownFileManager;
+import com.example.myokhtttp.net.download.enums.DownloadStatus;
+import com.example.myokhtttp.net.download.interfaces.IDownloadCallable;
 import com.example.myokhtttp.net.interfaces.IHttpCallBack;
 import com.example.myokhtttp.net.Velloy;
 
@@ -27,14 +29,15 @@ public class MainActivity extends Activity {
     String fileUrl = "http://gdown.baidu.com/data/wisegame/8be18d2c0dc8a9c9/WPSOffice_177.apk";
     private Button btnStartNet;
     private Button btnConcurrent;
+    private Button btnTest;
     private TextView textView;
-    private ListView listView;
+
+
+
     //权限
     String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
 
-    String a = "jklsfjfasfj";
-    String b = "ifasdklfjsdklafjjklsfjfasfjfioasujdfjklsfjfasfjklsfjfasf";
 
     //是否并发
     private boolean concurrent = false;
@@ -48,44 +51,30 @@ public class MainActivity extends Activity {
 
 
         btnConcurrent = (Button) findViewById(R.id.btn_concurrent);
+
+        btnTest=findViewById(R.id.btn_test);
+        btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,TestActivity.class));
+            }
+        });
         textView = (TextView) findViewById(R.id.tv_text);
         textView.setMovementMethod(ScrollingMovementMethod.getInstance());
         btnStartNet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //                getData();
-                //                concurrent = false;
-                //                PermissionsUtils.getInstance().chekPermissions(MainActivity.this, permissions, iPermissionsResult);
-                //                pipei(a, b);
-                AddSumFor();
-                AddSumDo();
-                AddSumWhile();
+                                concurrent = false;
+                                PermissionsUtils.getInstance().chekPermissions(MainActivity.this, permissions, iPermissionsResult);
             }
         });
 
         btnConcurrent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, TestActivity.class));
-
-
-                //                concurrent = true;
-                //                PermissionsUtils.getInstance().chekPermissions(MainActivity.this, permissions, iPermissionsResult);
-            }
-        });
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-
-
-        btnStartNet.post(new Runnable() {
-            @Override
-            public void run() {
-
+//                startActivity(new Intent(MainActivity.this, TestActivity.class));
+                                concurrent = true;
+                                PermissionsUtils.getInstance().chekPermissions(MainActivity.this, permissions, iPermissionsResult);
             }
         });
     }
@@ -149,68 +138,4 @@ public class MainActivity extends Activity {
         PermissionsUtils.getInstance().onRequestPermissionsResult(MainActivity.this, requestCode, permissions, grantResults);
     }
 
-
-    private void downFile() {
-        DownFileManager downFileManager = new DownFileManager();
-        downFileManager.download(fileUrl);
-    }
-
-
-    public int pipei(String str1, String str2) {
-        int len1 = str1.length();
-        int len2 = str2.length();
-        boolean x = false;
-
-        int i = 0;
-        int j = 0;
-        while (i < len1 && j < len2) {
-            char s = str1.charAt(i);
-            char d = str2.charAt(j);
-            if (s == d) {
-                x = true;
-                i++;
-            } else {
-                i = 0;
-                if (x) {
-                    x = false;
-                    j--;
-                }
-            }
-            j++;
-            if (i == len1) {
-                textView.setText("出现的位置" + (j - i));
-            }
-        }
-        return -1;
-    }
-
-    public void AddSumFor() {
-        long startTime = System.currentTimeMillis();
-        int sum = 0;
-        for (int i = 0; i <= 100; i++) {
-            sum += i;
-        }
-        System.out.println("for循环 用时" + (System.currentTimeMillis() - startTime));
-    }
-
-    public void AddSumWhile() {
-        long startTime = System.currentTimeMillis();
-        int sum = 0;
-        int i = 1;
-        while (i <= 10) {
-            sum = sum + i;
-            i++;
-        }
-        System.out.println("while循环 用时" + (System.currentTimeMillis() - startTime));
-    }
-
-    public void AddSumDo() {
-        long startTime = System.currentTimeMillis();
-        int sum = 0;
-        int i = 0;
-        do {
-            sum = sum = i;
-        } while (i <= 100);
-        System.out.println("do while 用时" + (System.currentTimeMillis() - startTime));
-    }
 }
